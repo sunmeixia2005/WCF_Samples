@@ -20,7 +20,7 @@ private void AuthInStsOfSaml20(string userName, string userPassword)
 	var rst = new RequestSecurityToken(RequestTypes.Issue);
 	rst.AppliesTo = new EndpointReference("https://RelyingParty/*");
 	rst.KeyType = KeyTypes.Bearer;
-	rst.TokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0";
+	**rst.TokenType = "http://docs.oasis-open.org/wss/oasis-wss-saml-token-profile-1.1#SAMLV2.0";**
 
 	using (var trustChannelFactory = new WSTrustChannelFactory("WS2007HttpBinding_IWSTrust13_Saml20Sync"))
 	{
@@ -46,6 +46,12 @@ private void AuthInStsOfSaml20(string userName, string userPassword)
 }	
 ```
 
+Also, I added the classical Calculator WCF Web Service and integrate it with the STS authentication.
 
 # How to use
-Just fetch the whole solution, open the .sln in Visual Studio and replace globally all occurrences of `cdf97a2b88f4cc367b5788f4e0e9ab43594d6541` to the thumprint of the certifcate on your LocalMachine/Personal folder that you choose to use. Run the solution, then you are ready to go!
+Just fetch the whole solution, open the .sln in Visual Studio and replace globally all occurrences of `cdf97a2b88f4cc367b5788f4e0e9ab43594d6541` to the thumprint of the certifcate on your LocalMachine/Personal folder that you choose to use. Run the solution (IISExpress will host all the services automatically), then you are ready to go!
+
+# Deploy to IIS
+
+![IIS Folder Structure](https://raw.githubusercontent.com/tedyyu/WCF_Samples/master/Non-MS-Sample/SAML/STS_Hosted_on_IIS.PNG "IIS Folder Structure")
+Create the folder structure like above, and create a Virtual Directory linked to the parent STS folder. Then convert its child folders to Application, and grant read & execute permission of the whole STS folder to IIS_IUSRS user.
