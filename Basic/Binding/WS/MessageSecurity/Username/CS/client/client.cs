@@ -4,6 +4,7 @@
 using System;
 using System.Text;
 using System.ServiceModel;
+using System.IO;
 
 namespace Microsoft.Samples.UserName
 {
@@ -14,11 +15,12 @@ namespace Microsoft.Samples.UserName
     {
         static void Main()
         {
+            Console.WriteLine("WCF client tweaked by tedy");
             Console.WriteLine("Username authentication required.");
             Console.WriteLine("Provide a valid machine or domain account. [domain\\user]");
-            Console.WriteLine("   Enter username:");
+            Console.Write("   Enter username:");
             string username = Console.ReadLine();
-            Console.WriteLine("   Enter password:");
+            Console.Write("   Enter password:");
             StringBuilder password = new StringBuilder();
 
             ConsoleKeyInfo info = Console.ReadKey(true);
@@ -51,8 +53,22 @@ namespace Microsoft.Samples.UserName
             client.ClientCredentials.UserName.UserName = username;
             client.ClientCredentials.UserName.Password = password.ToString();
 
-            // Call GetCallerIdentity service operation
-            Console.WriteLine(client.GetCallerIdentity());
+            try
+            {
+                // Call GetCallerIdentity service operation
+                Console.WriteLine(client.GetCallerIdentity());
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Exception met, detials: {0}", ex.Message);
+                if(ex.InnerException != null)
+                {
+                    Console.WriteLine("{0}", ex.InnerException.Message);
+                }
+                Console.Write("Type anything to exit:");
+                Console.ReadLine();
+                Environment.Exit(-1);
+            }
 
             // Call the Add service operation.
             double value1 = 100.00D;
@@ -77,6 +93,42 @@ namespace Microsoft.Samples.UserName
             value2 = 7.00D;
             result = client.Divide(value1, value2);
             Console.WriteLine("Divide({0},{1}) = {2}", value1, value2, result);
+
+            // Call the upload service operation.
+            Console.WriteLine("Next to test MTOM uploading");
+            Console.Write("   Enter how many random bytes to upload, defaults=1000, input 0 to skip:");
+            int bytes = 1000;
+            Int32.TryParse(Console.ReadLine(), out bytes);
+            if (bytes > 0)
+            {
+                MemoryStream stream = null;
+                try
+                {
+                    byte[] binaryData = new byte[bytes];
+                    stream = new MemoryStream(binaryData);
+                    Console.WriteLine("   {0} bytes uploaded successfully.", client.Upload(stream));
+                    Console.WriteLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception met, detials: {0}", ex.Message);
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine("{0}", ex.InnerException.Message);
+                    }
+                    Console.Write("Type anything to exit:");
+                    Console.ReadLine();
+                    Environment.Exit(-1);
+                }
+                finally
+                {
+                    if(stream != null) stream.Close();
+                }
+            }
+            else
+            {
+                Console.WriteLine("   Skipped by user.");
+            }
 
             //Closing the client gracefully closes the connection and cleans up resources
             client.Close();

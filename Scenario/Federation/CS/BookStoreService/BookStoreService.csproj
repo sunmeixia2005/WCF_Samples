@@ -76,7 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="store.svc" />
-    <None Include="Web.config" />
+    <None Include="Web.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="BookDB.txt" />
@@ -111,12 +113,13 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>md %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreService\bin
-copy "$(TargetDir)BookStoreService.dll" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreService\bin
-copy "$(TargetDir)Common.dll" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreService\bin
-copy "$(ProjectDir)store.svc" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreService
-copy "$(ProjectDir)web.config" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreService
-copy "$(ProjectDir)BookDB.txt" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreService
+    <PostBuildEvent>set SamplesVRootDir="%25USERPROFILE%25\Documents\My Web Sites\WebSite1\FederationSample"
+md %25SamplesVRootDir%25\BookStoreService\bin
+copy "$(TargetDir)BookStoreService.dll" %25SamplesVRootDir%25\BookStoreService\bin
+copy "$(TargetDir)Common.dll" %25SamplesVRootDir%25\BookStoreService\bin
+copy "$(ProjectDir)store.svc" %25SamplesVRootDir%25\BookStoreService
+copy "$(ProjectDir)web.config" %25SamplesVRootDir%25\BookStoreService
+copy "$(ProjectDir)BookDB.txt" %25SamplesVRootDir%25\BookStoreService
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IdentityModel.Claims;
 using System.IdentityModel.Tokens;
 using System.Security.Cryptography;
@@ -144,8 +145,9 @@ namespace Microsoft.Samples.SamlTokenProvider
             
             // Create the Saml condition with allowed audience Uris
             SamlConditions conditions = new SamlConditions(issueInstant, issueInstant + new TimeSpan(10, 0, 0));
-            conditions.Conditions.Add(new SamlAudienceRestrictionCondition(new Uri[] { new Uri("http://localhost:8000/servicemodelsamples/service/calc/symm"),
-                                                                                       new Uri("http://localhost:8000/servicemodelsamples/service/calc/asymm") }));
+            String baseUrl = ConfigurationManager.AppSettings["serviceBaseUrl"];
+            conditions.Conditions.Add(new SamlAudienceRestrictionCondition(new Uri[] { new Uri(baseUrl + "/calc/symm"),
+                                                                                       new Uri(baseUrl + "/calc/asymm") }));
 
             SamlAssertion samlAssertion = new SamlAssertion("_" + Guid.NewGuid().ToString(),
                                                             "Self",
@@ -154,7 +156,7 @@ namespace Microsoft.Samples.SamlTokenProvider
                                                             new SamlAdvice(),
                                                             samlSubjectStatements
                                                             );
-
+            
             // Set the SigningCredentials for the SamlAssertion
             samlAssertion.SigningCredentials = signingCredentials;
 

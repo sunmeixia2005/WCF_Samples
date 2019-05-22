@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ServiceModel;
+using System.IO;
+
 
 namespace Microsoft.Samples.UserName
 {
@@ -25,6 +27,9 @@ namespace Microsoft.Samples.UserName
         double Multiply(double n1, double n2);
         [OperationContract]
         double Divide(double n1, double n2);
+
+        [OperationContract]
+        int Upload(Stream data);
     }
 
     // Service class which implements the service contract.
@@ -36,7 +41,14 @@ namespace Microsoft.Samples.UserName
         {
             // By default the username client credential is mapped to a Windows identity
             // The Windows identity of the caller can be accessed on the ServiceSecurityContext.WindowsIdentity
-            return ServiceSecurityContext.Current.WindowsIdentity.Name;
+            if (ServiceSecurityContext.Current != null && ServiceSecurityContext.Current.WindowsIdentity != null)
+            {
+                return ServiceSecurityContext.Current.WindowsIdentity.Name;
+            }
+            else
+            {
+                return "WindowsIdentity n/a";
+            }
         }
 
         public double Add(double n1, double n2)
@@ -65,6 +77,23 @@ namespace Microsoft.Samples.UserName
 
             double result = n1 / n2;
             return result;
+        }
+
+        public int Upload(Stream data)
+        {
+            int size = 0;
+            int bytesRead = 0;
+            byte[] buffer = new byte[1024];
+
+            // Read all the data from the stream
+            do
+            {
+                bytesRead = data.Read(buffer, 0, buffer.Length);
+                size += bytesRead;
+            } while (bytesRead > 0);
+            data.Close();
+
+            return size;
         }
     }
 }

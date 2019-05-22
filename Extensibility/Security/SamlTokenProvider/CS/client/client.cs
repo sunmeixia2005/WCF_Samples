@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.IdentityModel.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel.Description;
+using System.Configuration;
+using System.ServiceModel.Security;
 
 namespace Microsoft.Samples.SamlTokenProvider
 {
@@ -41,10 +43,21 @@ namespace Microsoft.Samples.SamlTokenProvider
             SamlClientCredentials samlCC = new SamlClientCredentials();
 
             // Set the client certificate. This is the cert that will be used to sign the SAML token in the symmetric proof key case
-            samlCC.ClientCertificate.SetCertificate(StoreLocation.CurrentUser, StoreName.My, X509FindType.FindBySubjectName, "Alice");
+            //samlCC.ClientCertificate.SetCertificate(StoreLocation.CurrentUser, StoreName.My, X509FindType.FindBySubjectName, "Alice");
+            StoreLocation loc = StoreLocation.LocalMachine;
+            Enum.TryParse<StoreLocation>(ConfigurationManager.AppSettings["clientCertificateStoreLocation"], true, out loc);
+            StoreName store = StoreName.My;
+            Enum.TryParse<StoreName>(ConfigurationManager.AppSettings["clientCertificateStoreName"], true, out store);
+            samlCC.ClientCertificate.SetCertificate(loc, store, X509FindType.FindBySubjectDistinguishedName, ConfigurationManager.AppSettings["clientCertificate"]);
 
             // Set the service certificate. This is the cert that will be used to encrypt the proof key in the symmetric proof key case
-            samlCC.ServiceCertificate.SetDefaultCertificate(StoreLocation.CurrentUser, StoreName.TrustedPeople, X509FindType.FindBySubjectName, "localhost");
+            //samlCC.ServiceCertificate.SetDefaultCertificate(StoreLocation.CurrentUser, StoreName.My, X509FindType.FindBySubjectName, "localhost");
+            loc = StoreLocation.LocalMachine;
+            Enum.TryParse<StoreLocation>(ConfigurationManager.AppSettings["serverCertificateStoreLocation"], true, out loc);
+            store = StoreName.My;
+            Enum.TryParse<StoreName>(ConfigurationManager.AppSettings["serverCertificateStoreName"], true, out store);
+            samlCC.ServiceCertificate.SetDefaultCertificate(loc, store, X509FindType.FindBySubjectDistinguishedName, ConfigurationManager.AppSettings["serverCertificate"]);
+            //samlCC.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
 
             // Create some claims to put in the SAML assertion
             IList<Claim> claims = new List<Claim>();

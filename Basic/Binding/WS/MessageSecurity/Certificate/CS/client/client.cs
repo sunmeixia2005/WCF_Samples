@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All Rights Reserved.
 
 using System;
+using System.IO;
 using System.ServiceModel;
 
 namespace Microsoft.Samples.Certificate
@@ -13,11 +14,28 @@ namespace Microsoft.Samples.Certificate
     {
         static void Main()
         {
+            Console.WriteLine("WCF client tweaked by tedy");
+            Console.WriteLine("Prequisite: set up client certificate in server's trusted people store first.");
+
             // Create a client
             CalculatorClient client = new CalculatorClient();
 
-            // Call the GetCallerIdentity service operation
-            Console.WriteLine(client.GetCallerIdentity());
+            try
+            {
+                // Call GetCallerIdentity service operation
+                Console.WriteLine("client certificate thumbprint: {0}", client.GetCallerIdentity());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception met, detials: {0}", ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("{0}", ex.InnerException.Message);
+                }
+                Console.Write("Type anything to exit:");
+                Console.ReadLine();
+                Environment.Exit(-1);
+            }
 
             // Call the Add service operation.
             double value1 = 100.00D;
@@ -43,6 +61,42 @@ namespace Microsoft.Samples.Certificate
             value2 = 7.00D;
             result = client.Divide(value1, value2);
             Console.WriteLine("Divide({0},{1}) = {2}", value1, value2, result);
+
+            // Call the upload service operation.
+            Console.WriteLine("Next to test MTOM uploading");
+            Console.Write("   Enter how many random bytes to upload, defaults=1000, input 0 to skip:");
+            int bytes = 1000;
+            Int32.TryParse(Console.ReadLine(), out bytes);
+            if (bytes > 0)
+            {
+                MemoryStream stream = null;
+                try
+                {
+                    byte[] binaryData = new byte[bytes];
+                    stream = new MemoryStream(binaryData);
+                    Console.WriteLine("   {0} bytes uploaded successfully.", client.Upload(stream));
+                    Console.WriteLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exception met, detials: {0}", ex.Message);
+                    if (ex.InnerException != null)
+                    {
+                        Console.WriteLine("{0}", ex.InnerException.Message);
+                    }
+                    Console.Write("Type anything to exit:");
+                    Console.ReadLine();
+                    Environment.Exit(-1);
+                }
+                finally
+                {
+                    if (stream != null) stream.Close();
+                }
+            }
+            else
+            {
+                Console.WriteLine("   Skipped by user.");
+            }
 
             //Closing the client gracefully closes the connection and cleans up resources
             client.Close();

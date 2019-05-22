@@ -103,11 +103,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>md %25SystemDrive%25\inetpub\wwwroot\FederationSample\HomeRealmSTS\bin
-copy "$(TargetDir)HomeRealmSTS.dll" %25SystemDrive%25\inetpub\wwwroot\FederationSample\HomeRealmSTS\bin
-copy "$(TargetDir)Common.dll" %25SystemDrive%25\inetpub\wwwroot\FederationSample\HomeRealmSTS\bin
-copy "$(ProjectDir)STS.svc" %25SystemDrive%25\inetpub\wwwroot\FederationSample\HomeRealmSTS
-copy "$(ProjectDir)web.config" %25SystemDrive%25\inetpub\wwwroot\FederationSample\HomeRealmSTS
+    <PostBuildEvent>set SamplesVRootDir="%25USERPROFILE%25\Documents\My Web Sites\WebSite1\FederationSample"
+md %25SamplesVRootDir%25\HomeRealmSTS\bin
+copy "$(TargetDir)HomeRealmSTS.dll" %25SamplesVRootDir%25\HomeRealmSTS\bin
+copy "$(TargetDir)Common.dll" %25SamplesVRootDir%25\HomeRealmSTS\bin
+copy "$(ProjectDir)STS.svc" %25SamplesVRootDir%25\HomeRealmSTS
+copy "$(ProjectDir)web.config" %25SamplesVRootDir%25\HomeRealmSTS
 </PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -2,6 +2,7 @@
 //  Copyright (c) Microsoft Corporation.  All Rights Reserved.
 
 using System;
+using System.IO;
 using System.ServiceModel;
 
 namespace Microsoft.Samples.Certificate
@@ -20,6 +21,9 @@ namespace Microsoft.Samples.Certificate
         double Multiply(double n1, double n2);
         [OperationContract]
         double Divide(double n1, double n2);
+
+        [OperationContract]
+        int Upload(Stream data);
     }
 
     // Service class which implements the service contract.
@@ -57,6 +61,23 @@ namespace Microsoft.Samples.Certificate
         {
             double result = n1 / n2;
             return result;
+        }
+
+        public int Upload(Stream data)
+        {
+            int size = 0;
+            int bytesRead = 0;
+            byte[] buffer = new byte[1024];
+
+            // Read all the data from the stream
+            do
+            {
+                bytesRead = data.Read(buffer, 0, buffer.Length);
+                size += bytesRead;
+            } while (bytesRead > 0);
+            data.Close();
+
+            return size;
         }
     }
 

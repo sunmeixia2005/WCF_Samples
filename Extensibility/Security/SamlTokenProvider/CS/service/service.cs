@@ -83,13 +83,13 @@ namespace Microsoft.Samples.SamlTokenProvider
             using (ServiceHost serviceHost = new ServiceHost(typeof(CalculatorService)))
             {
                 // Set validation mode for issuer certificates to allow certificates in the trusted people store
-                serviceHost.Credentials.IssuedTokenAuthentication.CertificateValidationMode = X509CertificateValidationMode.PeerTrust;
+                serviceHost.Credentials.IssuedTokenAuthentication.CertificateValidationMode = X509CertificateValidationMode.PeerOrChainTrust;
                 // Open the ServiceHost to create listeners and start listening for messages.
                 serviceHost.Open();
 
                 // The service can now be accessed.
-                Console.WriteLine("The service is ready.");
-                Console.WriteLine("The service is running in the following account: {0}", WindowsIdentity.GetCurrent().Name);
+                Console.WriteLine("The SamlTokenProvider service is ready.");
+                Console.WriteLine("The SamlTokenProvider service is running in the following account: {0}", WindowsIdentity.GetCurrent().Name);
                 Console.WriteLine("Press <ENTER> to terminate service.");
                 Console.WriteLine();
                 Console.ReadLine();

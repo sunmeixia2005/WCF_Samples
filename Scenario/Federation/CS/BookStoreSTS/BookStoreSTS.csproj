@@ -109,11 +109,12 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>md %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreSTS\bin
-copy "$(TargetDir)BookStoreSTS.dll" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreSTS\bin
-copy "$(TargetDir)Common.dll" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreSTS\bin
-copy "$(ProjectDir)STS.svc" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreSTS
-copy "$(ProjectDir)web.config" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreSTS
-copy "$(ProjectDir)BookDB.txt" %25SystemDrive%25\inetpub\wwwroot\FederationSample\BookStoreSTS</PostBuildEvent>
+    <PostBuildEvent>set SamplesVRootDir="%25USERPROFILE%25\Documents\My Web Sites\WebSite1\FederationSample"
+md %25SamplesVRootDir%25\BookStoreSTS\bin
+copy "$(TargetDir)BookStoreSTS.dll" %25SamplesVRootDir%25\BookStoreSTS\bin
+copy "$(TargetDir)Common.dll" %25SamplesVRootDir%25\BookStoreSTS\bin
+copy "$(ProjectDir)STS.svc" %25SamplesVRootDir%25\BookStoreSTS
+copy "$(ProjectDir)web.config" %25SamplesVRootDir%25\BookStoreSTS
+copy "$(ProjectDir)BookDB.txt" %25SamplesVRootDir%25\BookStoreSTS</PostBuildEvent>
   </PropertyGroup>
 </Project>

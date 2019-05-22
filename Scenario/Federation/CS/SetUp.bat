@@ -2,7 +2,9 @@
 @echo off
 setlocal
 
-set SamplesVRootDir=%SystemDrive%\inetpub\wwwroot\FederationSample
+#set SamplesVRootDir=%SystemDrive%\inetpub\wwwroot\FederationSample
+
+set SamplesVRootDir="%USERPROFILE%\Documents\My Web Sites\WebSite1\FederationSample"
 mkdir %SamplesVRootDir%
 
 echo Creating virtual directories...
